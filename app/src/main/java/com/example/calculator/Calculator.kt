@@ -1,6 +1,7 @@
 package com.example.calculator
 
 import android.R
+import android.R.attr.fontWeight
 import android.widget.Button
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -33,7 +35,7 @@ val buttonList = listOf(
     "AC","0",".","="
 )
 @Composable
-fun Calculator (modifier: Modifier = Modifier){
+fun Calculator (modifier: Modifier = Modifier, viewModel: CalculatorViewModel){
     Box(modifier = modifier){
         Column(
             modifier = modifier.fillMaxSize(),
@@ -47,6 +49,8 @@ fun Calculator (modifier: Modifier = Modifier){
                 maxLines = 5,
                 overflow = TextOverflow.Ellipsis
             )
+            Spacer(modifier = Modifier.weight(1f))
+
             Text(text = "246",
                 style = TextStyle(
                     fontSize = 60.sp,
@@ -61,23 +65,25 @@ fun Calculator (modifier: Modifier = Modifier){
                 columns = GridCells.Fixed(4),
                 ) {
                      items(buttonList){
-                         CalculatorButton(btn = it)
+                         CalculatorButton(btn = it, onClick = {
+                             viewModel.onButtonClick(it)
+                         })
                      }
                 }
             }
         }
     }
 @Composable
-fun CalculatorButton(btn : String){
-    Box(modifier = Modifier.padding(8.dp)){
+fun CalculatorButton(btn : String, onClick : ()-> Unit){
+    Box(modifier = Modifier.padding(10.dp)){
         FloatingActionButton(
-            onClick = { },
+            onClick = onClick,
             modifier = Modifier.size(80.dp),
             shape = CircleShape,
-            contentColor = Color.Cyan,
+            contentColor = Color.Black,
             containerColor = getColor(btn)
             ) {
-                Text(text = btn)
+                Text(text = btn, fontSize = 22.sp, fontWeight = FontWeight.Bold)
         }
 
     }
@@ -85,7 +91,7 @@ fun CalculatorButton(btn : String){
 }
 fun getColor(btn: String) : Color{
     if(btn == "C" || btn =="AC")
-        return Color.DarkGray
+        return Color(0xFFDE0505)
     if(btn == "(" || btn == ")")
         return Color.Gray
     if(btn == "/" || btn == "*" || btn == "+" || btn == "-" || btn =="=")
